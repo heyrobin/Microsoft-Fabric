@@ -9,7 +9,7 @@ This document outlines the design and implementation of an Full data pipeline. T
 
 *Figure 1: Full load pipeline.*
 
-
+## Lookup
 ```json
 {
     "name": "Lookup Watermark",
@@ -57,6 +57,9 @@ This document outlines the design and implementation of an Full data pipeline. T
     }
 }
 ```
+
+
+## For Each
 
 ```json
 {
