@@ -5,16 +5,12 @@
 
 This document outlines the design and implementation of an incremental data pipeline. The goal is to process only the new or modified data since the last run, thus improving efficiency and reducing processing time.
 
-## Table of Contents
-1. [Section 1](#section-1)
-2. [Section 2](#section-2)
-3. [Section 3](#section-3)
-4. [Conclusion](#conclusion)
-5. [References](#references)
+![Image Description](https://github.com/heyrobin/Microsoft-Fabric/blob/main/Images/Incremental%20Pipeline.png)
+
+*Figure 1: increment load pipeline.*
+
 
 ## Lookup Code
-
-
 ```json
 {
     "name": "Lookup Watermark",
@@ -268,3 +264,49 @@ This document outlines the design and implementation of an incremental data pipe
     }
 }
 ```
+
+## WaterMark Table
+
+![Image Description](https://github.com/heyrobin/Microsoft-Fabric/blob/main/Images/Water%20Mark%20Table.png)
+
+*Figure 2: WaterMark Table.*
+
+
+
+```sql
+
+drop table watermark_table;
+
+CREATE TABLE watermark_table (
+    table_name varchar(255),
+    column_name varchar(255),
+    watermark_value varchar(10)
+);
+
+INSERT INTO watermark_table
+VALUES ('Trans_dim','payment_key', '30'),
+('item_dim','item_key', '00261');
+
+
+SELECT * from watermark_table 
+```
+## Stored Procedure
+```sql
+-- Stored Procedure
+
+drop PROCEDURE usp_write_watermark
+
+CREATE PROCEDURE usp_write_watermark @update_value varchar(10), @update_table_name varchar(50)
+AS
+
+BEGIN
+
+UPDATE watermark_table
+SET [watermark_value] = @update_value
+WHERE [table_name] = @update_table_name
+
+END
+
+SELECT * FROM watermark_table
+```
+
